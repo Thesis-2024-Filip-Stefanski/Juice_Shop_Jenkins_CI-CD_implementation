@@ -24,9 +24,9 @@ pipeline {
         docker run -d -i -t --network=mynetwork --name NPM node:latest
         docker exec -i NPM ls
         docker exec -i NPM pwd        
-        echo "${JOB_BASE_NAME}"
+        echo "${JOB_NAME}"
         docker exec -i NPM mkdir -p ${JOB_BASE_NAME}
-        docker cp ${JOB_BASE_NAME} NPM:${JOB_BASE_NAME}
+        docker cp ${JOB_NAME} NPM:${JOB_BASE_NAME}
         docker exec -i NPM ls
         docker exec -i NPM pwd
         docker exec -i -w ${JOB_BASE_NAME}/npm_no_docker-compose-app NPM ls
