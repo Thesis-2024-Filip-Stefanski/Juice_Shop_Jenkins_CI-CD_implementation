@@ -26,7 +26,7 @@ pipeline {
         docker exec -i NPM pwd        
         echo "${WORKSPACE}"
         docker exec -i NPM mkdir -p ${JOB_BASE_NAME}
-        docker cp ${WORKSPACE} NPM:${JOB_BASE_NAME}
+        docker cp ${WORKSPACE} NPM:/
         docker exec -i NPM ls
         docker exec -i NPM pwd
         docker exec -i -w /${JOB_BASE_NAME} NPM ls
@@ -39,7 +39,7 @@ pipeline {
     stage('Set up testing environment') {
       steps {
         sh '''
-        docker exec -i -w ${JOB_BASE_NAME}/npm_no_docker-compose-app NPM npm start & 
+        docker exec -i -w /${JOB_BASE_NAME} NPM npm start & 
         docker run -d -i -t --network=mynetwork --name OWASPZAP -v $(pwd):/zap/wrk/:rw owasp/zap2docker-stable
         docker ps
         '''
