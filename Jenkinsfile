@@ -18,6 +18,8 @@ pipeline {
     stage('Build') {
       steps {
         sh '''
+        ls
+        pwd
         docker network create mynetwork
         docker run -d -i -t --network=mynetwork --name NPM node:latest
         docker exec -i NPM ls
@@ -31,7 +33,7 @@ pipeline {
         docker exec -i -w ${JOB_BASE_NAME}/npm_no_docker-compose-app NPM npm install
         docker ps 
         docker network inspect mynetwork        
-          '''
+        '''
       }
     }
     stage('Set up testing environment') {
