@@ -3,7 +3,12 @@ pipeline {
   stages {
     stage('Prune Docker data'){
       steps{
-        sh '''
+        try{ 
+          sh 'docker stop $(docker ps -aq)'
+        } catch (err){
+           echo "Caught: ${err}"
+        }
+        sh '''       
         docker system prune -a --volumes -f
         '''
       }
@@ -15,14 +20,6 @@ pipeline {
         docker run -d -i -t --network=mynetwork --name NPM node:latest
         docker exec -i NPM ls
         docker exec -i NPM pwd
-        docker exec -i NPM mkdir -p ${{ github.workspace }}
-        docker cp ${{ github.workspace }} NPM:${{ github.workspace }}
-        docker exec -i NPM ls
-        docker exec -i NPM pwd
-        docker exec -i -w ${{ github.workspace }}/npm_no_docker-compose-app NPM ls
-        docker exec -i -w ${{ github.workspace }}/npm_no_docker-compose-app NPM npm install
-        docker ps 
-        docker network inspect mynetwork
           '''
       }
     }
