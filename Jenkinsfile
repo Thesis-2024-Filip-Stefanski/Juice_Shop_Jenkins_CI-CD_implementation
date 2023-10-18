@@ -29,8 +29,8 @@ pipeline {
         docker cp ${WORKSPACE} NPM:${JOB_BASE_NAME}
         docker exec -i NPM ls
         docker exec -i NPM pwd
-        docker exec -i -w ${WORKSPACE}/npm_no_docker-compose-app NPM ls
-        docker exec -i -w ${WORKSPACE}/npm_no_docker-compose-app NPM npm install
+        docker exec -i -w ${JOB_BASE_NAME} NPM ls
+        docker exec -i -w ${JOB_BASE_NAME} NPM npm install
         docker ps 
         docker network inspect mynetwork        
         '''
