@@ -24,13 +24,13 @@ pipeline {
         docker run -d -i -t --network=mynetwork --name NPM node:latest
         docker exec -i NPM ls
         docker exec -i NPM pwd        
-        echo "${JOB_NAME}"
+        echo "${WORKSPACE}"
         docker exec -i NPM mkdir -p ${JOB_BASE_NAME}
-        docker cp ${JOB_NAME} NPM:${JOB_BASE_NAME}
+        docker cp ${WORKSPACE} NPM:${JOB_BASE_NAME}
         docker exec -i NPM ls
         docker exec -i NPM pwd
-        docker exec -i -w ${JOB_BASE_NAME}/npm_no_docker-compose-app NPM ls
-        docker exec -i -w ${JOB_BASE_NAME}/npm_no_docker-compose-app NPM npm install
+        docker exec -i -w ${WORKSPACE}/npm_no_docker-compose-app NPM ls
+        docker exec -i -w ${WORKSPACE}/npm_no_docker-compose-app NPM npm install
         docker ps 
         docker network inspect mynetwork        
         '''
