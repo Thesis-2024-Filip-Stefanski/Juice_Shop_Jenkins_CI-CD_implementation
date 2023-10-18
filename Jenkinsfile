@@ -3,6 +3,7 @@ pipeline {
   stages {
     stage('Prune Docker data'){
       steps{
+        script{
         try{ 
           sh 'docker stop $(docker ps -aq)'
         } catch (err){
@@ -11,6 +12,7 @@ pipeline {
         sh '''       
         docker system prune -a --volumes -f
         '''
+        }
       }
     }
     stage('Build') {
