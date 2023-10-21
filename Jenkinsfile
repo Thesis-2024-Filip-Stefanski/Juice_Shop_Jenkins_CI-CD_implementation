@@ -71,7 +71,18 @@ pipeline {
   }
   post {
     always{
-      sh 'docker system prune -a --volumes -f'
+      script{
+          try{ 
+            sh 'docker stop $(docker ps -aq)'
+          } catch (err){
+            echo "Caught: ${err}"
+          }
+          sh '''       
+          docker system prune -a --volumes -f
+          '''
+          }
+        }
+      }
     }
   }
 }
