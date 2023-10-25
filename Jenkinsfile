@@ -21,7 +21,7 @@ pipeline {
         ls
         pwd
         docker network create mynetwork
-        docker run -d -i -t --network=mynetwork --name NPM node:latest
+        docker run -d -i -t --network=mynetwork --name NPM node:20-alpine
         docker exec -i NPM ls
         docker exec -i NPM pwd        
         echo "${WORKSPACE}"
