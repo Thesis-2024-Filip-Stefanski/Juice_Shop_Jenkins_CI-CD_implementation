@@ -72,6 +72,7 @@ pipeline {
   post {
     always{
       script{
+          archiveArtifacts artifacts: 'ZAP_*'
           try{ 
             sh 'docker stop $(docker ps -aq)'
           } catch (err){
