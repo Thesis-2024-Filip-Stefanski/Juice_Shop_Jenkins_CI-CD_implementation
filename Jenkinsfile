@@ -47,13 +47,13 @@ pipeline {
     }
     stage('Copy files to OWASP ZAP'){
       steps{
-        sh 'docker cp OWASPZAP_scanns/npm-web-app.yaml OWASPZAP:/zap/npm-web-app.yaml'
+        sh 'docker cp OWASPZAP_scanns/Juice_Shop_baseline.yaml OWASPZAP:/zap/Juice_Shop_baseline.yaml'
       }
     }
     stage('Execute the scan'){
       steps{
            sh '''
-           docker exec -i OWASPZAP zap.sh -cmd -autorun /zap/npm-web-app.yaml
+           docker exec -i OWASPZAP zap.sh -cmd -autorun /zap/Juice_Shop_baseline.yaml
            docker exec OWASPZAP sh -c ls
            docker exec -i OWASPZAP pwd
            '''
