@@ -18,21 +18,11 @@ pipeline {
     stage('Build') {
       steps {
         sh '''
-        ls
-        pwd
-        docker network create mynetwork
-        docker run -d -i -t --network=mynetwork --name NPM node:20-alpine
-        docker exec -i NPM ls
-        docker exec -i NPM pwd        
-        echo "${WORKSPACE}"
+        docker network create test_network
+        docker run -d -i -t --network=test_network --name NPM node:20-alpine   
         docker exec -i NPM mkdir -p ${JOB_BASE_NAME}
         docker cp ${WORKSPACE} NPM:/
-        docker exec -i NPM ls
-        docker exec -i NPM pwd
-        docker exec -i -w /${JOB_BASE_NAME} NPM ls
-        docker exec -i -w /${JOB_BASE_NAME} NPM npm install
-        docker ps 
-        docker network inspect mynetwork        
+        docker exec -i -w /${JOB_BASE_NAME} NPM npm install 
         '''
       }
     }
@@ -40,29 +30,25 @@ pipeline {
       steps {
         sh '''
         docker exec -i -w /${JOB_BASE_NAME} NPM npm start & 
-        docker run -d -i -t --network=mynetwork --name OWASPZAP -v $(pwd):/zap/wrk/:rw owasp/zap2docker-stable
-        docker ps
+        docker run -d -i -t --network=test_network --name OWASPZAP -v $(pwd):/zap/wrk/:rw owasp/zap2docker-stable
         '''
       }
     }
     stage('Copy files to OWASP ZAP'){
       steps{
-        sh 'docker cp OWASPZAP_scanns/Juice_Shop_custom1.yaml OWASPZAP:/zap/Juice_Shop_custom1.yaml'
+        sh 'docker cp OWASPZAP_scanns/Juice_Shop_full.yaml OWASPZAP:/zap/Juice_Shop_full.yaml'
       }
     }
     stage('Execute the scan'){
       steps{
            sh '''
-           docker exec -i OWASPZAP zap.sh -cmd -autorun /zap/Juice_Shop_custom1.yaml
-           docker exec OWASPZAP sh -c ls
-           docker exec -i OWASPZAP pwd
+           docker exec -i OWASPZAP zap.sh -cmd -autorun /zap/Juice_Shop_full.yaml
            '''
       }
     }
     stage('Export reports'){
       steps{
         sh '''
-        pwd
         docker cp OWASPZAP:/zap/ZAP_REPORT.html .
         docker cp OWASPZAP:/zap/ZAP_ALERT_REPORT.md .
         '''
